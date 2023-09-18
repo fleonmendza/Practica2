@@ -1,11 +1,14 @@
 package com.eflm.practica2.ui.Adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.eflm.practica2.R
 import com.eflm.practica2.data.remote.model.AlimentoDto
 import com.eflm.practica2.databinding.AlimentElementBinding
+
 
 class AlimentsAdapter(
     private val aliments: List<AlimentoDto>,
@@ -13,10 +16,12 @@ class AlimentsAdapter(
 ): RecyclerView.Adapter<AlimentsAdapter.ViewHolder>() {
     class ViewHolder(private val binding: AlimentElementBinding): RecyclerView.ViewHolder(binding.root){
 
-        val ivThumbnail = binding.ivThumbnail
+        val ivThumbnail = binding.ivImage
 
-        fun bind(aliment: AlimentoDto){
+        fun bind(aliment: AlimentoDto, context: Context){
             binding.tvTitle.text = aliment.nombre
+            binding.tvTime.text = context.getString(R.string.tiempo_de_preparacion).plus(aliment.tiempo_preparacion.toString()).plus("  min")
+            binding.tvtipoP.text = aliment.tipo_plato
         }
     }
 
@@ -30,7 +35,7 @@ class AlimentsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val ali = aliments[position]
 
-        holder.bind(ali)
+        holder.bind(ali, holder.itemView.context)
 
         Glide.with(holder.itemView.context)
             .load(ali.imagen)
@@ -42,3 +47,4 @@ class AlimentsAdapter(
         }
     }
 }
+

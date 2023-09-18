@@ -1,15 +1,15 @@
 package com.eflm.practica2.ui.Fragments
 
+
+import android.R
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-
-
 import android.util.Log
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.eflm.practica2.application.AlimentsRFApp
@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 
 private const val ALIMENTO_ID = "aliment_id"
@@ -39,7 +40,7 @@ class AlimentDetailFragment : Fragment() {
         arguments?.let { args ->
             alimentoId = args.getString(ALIMENTO_ID)
 
-            Log.d(Constants.LOGTAG, "Id recibido: $alimentoId")
+            Log.d(Constants.LOGTAG, getString(com.eflm.practica2.R.string.id_recibido, alimentoId))
 
             repository = (requireActivity().application as AlimentsRFApp).repository
 
@@ -54,10 +55,27 @@ class AlimentDetailFragment : Fragment() {
                             call: Call<AlimentodetDto>,
                             response: Response<AlimentodetDto>
                         ) {
-                            Log.d(Constants.LOGTAG, "Respuesta del servidor: ${response.body()}")
+                            Log.d(Constants.LOGTAG,
+                                getString(
+                                    com.eflm.practica2.R.string.respuesta_del_servidor,
+                                    response.body()
+                                ))
+                            val ingredientes1 = response.body()?.ingredientes
+                            if (ingredientes1 != null) {
+                                val ingredientesConGuion = ingredientes1.map { "- $it" } // Agrega un guion antes de cada ingrediente
+                                val ingredientesConcatenados = ingredientesConGuion.joinToString("\n") // Concatena los ingredientes con saltos de línea
+                                binding.tvIngre.text = ingredientesConcatenados
+                            }
                             binding.apply {
+                                pbLoading.visibility = View.GONE
                                 tvTitle.text = response.body()?.nombre
                                 tvLongDesc.text = response.body()?.descripcion
+                                tvTime.text = response.body()?.tiempo_preparacion.toString().plus(
+                                    getString(com.eflm.practica2.R.string.minutos))
+                                tvbasePlatillo.text = response.body()?.basePlatillo
+
+
+
 
                                 Glide.with(requireContext())
                                     .load(response.body()?.imagen)
@@ -67,7 +85,9 @@ class AlimentDetailFragment : Fragment() {
                         }
 
                         override fun onFailure(call: Call<AlimentodetDto>, t: Throwable) {
-                            Toast.makeText(requireActivity(), "No hay conexión", Toast.LENGTH_SHORT).show()
+                            binding.pbLoading.visibility = View.GONE
+                            Toast.makeText(requireActivity(),
+                                getString(com.eflm.practica2.R.string.no_hay_conexi_n), Toast.LENGTH_SHORT).show()
                         }
 
                     })

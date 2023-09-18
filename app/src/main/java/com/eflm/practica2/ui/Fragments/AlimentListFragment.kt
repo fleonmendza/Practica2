@@ -53,9 +53,12 @@ class AlimentListFragment : Fragment() {
                     call: Call<List<AlimentoDto>>,
                     response: Response<List<AlimentoDto>>
                 ) {
-
-                    Log.d(Constants.LOGTAG, "Respuesta del servidor: ${response.body()}")
-
+                    binding.pbLoading.visibility = View.GONE
+                    Log.d(Constants.LOGTAG,
+                        getString(
+                            com.eflm.practica2.R.string.respuesta_del_servidor,
+                            response.body()
+                        ))
                     response.body()?.let{ aliment ->
                         binding.rvAliments.apply {
                             layoutManager = LinearLayoutManager(requireContext())
@@ -75,8 +78,8 @@ class AlimentListFragment : Fragment() {
 
                 override fun onFailure(call: Call<List<AlimentoDto>>, t: Throwable) {
                     Log.d(Constants.LOGTAG, "Error: ${t.message}")
-
-                    Toast.makeText(requireActivity(), "No hay conexión", Toast.LENGTH_SHORT).show()
+                    binding.pbLoading.visibility = View.GONE
+                    Toast.makeText(requireActivity(), getString(com.eflm.practica2.R.string.no_hay_conexi_n), Toast.LENGTH_SHORT).show()
 
                 }
 
