@@ -28,5 +28,7 @@ data class AlimentodetDto(
     @SerializedName("tipo_plato")
     val tipo_plato: String? = null,
     @SerializedName("restricciones_dieteticas")
-    var restricciones_dieteticas: List<String>? = null
+    var restricciones_dieteticas: List<String>? = null,
+    @SerializedName("video")
+    var video: String? = null
 )

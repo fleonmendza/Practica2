@@ -2,6 +2,9 @@ package com.eflm.practica2.ui.Fragments
 
 
 import android.R
+
+import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +19,7 @@ import com.eflm.practica2.application.AlimentsRFApp
 import com.eflm.practica2.data.AlimentRepository
 import com.eflm.practica2.data.remote.model.AlimentodetDto
 import com.eflm.practica2.databinding.FragmentAlimentDetailBinding
+import com.eflm.practica2.ui.VideoPlayer
 import com.eflm.practica2.util.Constants
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -31,12 +35,12 @@ class AlimentDetailFragment : Fragment() {
     private var _binding: FragmentAlimentDetailBinding? = null
     private val binding get() = _binding!!
     private lateinit var repository: AlimentRepository
-
-
-
+    private var mediaPlayer: MediaPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mediaPlayer = MediaPlayer.create(requireContext(), com.eflm.practica2.R.raw.whip)
+
         arguments?.let { args ->
             alimentoId = args.getString(ALIMENTO_ID)
 
@@ -55,6 +59,7 @@ class AlimentDetailFragment : Fragment() {
                             call: Call<AlimentodetDto>,
                             response: Response<AlimentodetDto>
                         ) {
+                            mediaPlayer?.start()
                             Log.d(Constants.LOGTAG,
                                 getString(
                                     com.eflm.practica2.R.string.respuesta_del_servidor,
@@ -74,12 +79,15 @@ class AlimentDetailFragment : Fragment() {
                                     getString(com.eflm.practica2.R.string.minutos))
                                 tvbasePlatillo.text = response.body()?.basePlatillo
 
-
-
-
                                 Glide.with(requireContext())
                                     .load(response.body()?.imagen)
                                     .into(ivImage)
+                            }
+                            binding.btnVideo.setOnClickListener {
+                                val dataIntent = Intent(requireContext(), VideoPlayer::class.java).apply {
+                                    putExtra("EXTRA_URLVIDEO", response.body()?.video)
+                                }
+                                startActivity(dataIntent)
                             }
 
                         }
@@ -105,6 +113,8 @@ class AlimentDetailFragment : Fragment() {
     ): View? {
         _binding = FragmentAlimentDetailBinding.inflate(inflater, container, false)
         return binding.root
+
+
     }
 
     override fun onDestroy() {
