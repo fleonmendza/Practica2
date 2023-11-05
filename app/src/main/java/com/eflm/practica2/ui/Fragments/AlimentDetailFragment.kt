@@ -39,7 +39,7 @@ class AlimentDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mediaPlayer = MediaPlayer.create(requireContext(), com.eflm.practica2.R.raw.whip)
+        mediaPlayer = MediaPlayer.create(requireContext(), com.eflm.practica2.R.raw.comer)
 
         arguments?.let { args ->
             alimentoId = args.getString(ALIMENTO_ID)
