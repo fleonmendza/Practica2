@@ -30,5 +30,9 @@ data class AlimentodetDto(
     @SerializedName("restricciones_dieteticas")
     var restricciones_dieteticas: List<String>? = null,
     @SerializedName("video")
-    var video: String? = null
+    var video: String? = null,
+    @SerializedName("lat")
+    var lat: Double? = null,
+    @SerializedName("long")
+    var long: Double? = null
 )

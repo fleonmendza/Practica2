@@ -19,6 +19,7 @@ import com.eflm.practica2.application.AlimentsRFApp
 import com.eflm.practica2.data.AlimentRepository
 import com.eflm.practica2.data.remote.model.AlimentodetDto
 import com.eflm.practica2.databinding.FragmentAlimentDetailBinding
+import com.eflm.practica2.ui.MapView
 import com.eflm.practica2.ui.VideoPlayer
 import com.eflm.practica2.util.Constants
 import kotlinx.coroutines.launch
@@ -86,6 +87,14 @@ class AlimentDetailFragment : Fragment() {
                             binding.btnVideo.setOnClickListener {
                                 val dataIntent = Intent(requireContext(), VideoPlayer::class.java).apply {
                                     putExtra("EXTRA_URLVIDEO", response.body()?.video)
+                                }
+                                startActivity(dataIntent)
+                            }
+                            binding.btnLocation.setOnClickListener {
+                                val dataIntent = Intent(requireContext(), MapView::class.java).apply {
+                                    putExtra("EXTRA_LAT", response.body()?.lat)
+                                    putExtra("EXTRA_LONG", response.body()?.long)
+                                    putExtra("EXTRA_NAME", response.body()?.nombre)
                                 }
                                 startActivity(dataIntent)
                             }

@@ -1,5 +1,6 @@
 package com.eflm.practica2.ui.Fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,7 +16,10 @@ import com.eflm.practica2.data.AlimentRepository
 import com.eflm.practica2.data.remote.model.AlimentoDto
 import com.eflm.practica2.databinding.FragmentAlimentListBinding
 import com.eflm.practica2.ui.Adapters.AlimentsAdapter
+import com.eflm.practica2.ui.Login
 import com.eflm.practica2.util.Constants
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,6 +30,11 @@ class AlimentListFragment : Fragment() {
     private var _binding: FragmentAlimentListBinding? = null
     private val binding get() = _binding!!
     private lateinit var repository: AlimentRepository
+
+    private var user: FirebaseUser? = null
+    private var userId: String? = null
+
+    private lateinit var firebaseAuth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -43,9 +52,23 @@ class AlimentListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        firebaseAuth = FirebaseAuth.getInstance()
+
+        user = firebaseAuth?.currentUser
+        userId = user?.uid
+
         repository = (requireActivity().application as AlimentsRFApp).repository
 
+        binding.tvName.text = user?.email
+
+        binding.btnOut.setOnClickListener {
+            firebaseAuth.signOut()
+            startActivity(Intent(requireContext(), Login::class.java))
+            requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
+        }
+
         lifecycleScope.launch {
+
             val call: Call<List<AlimentoDto>> = repository.getAllAliments()
 
             call.enqueue(object: Callback<List<AlimentoDto>> {

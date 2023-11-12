@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -50,6 +51,9 @@ dependencies {
     //Adicional para el interceptor
     implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
 
+    //Shared preferences encriptadas
+    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
+
     //Glide y Picasso
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     implementation "com.squareup.picasso:picasso:$picassoVersion"
@@ -59,6 +63,11 @@ dependencies {
 
     //Imágenes con bordes redondeados
     implementation 'com.makeramen:roundedimageview:2.3.0'
+    implementation 'com.google.firebase:firebase-auth:22.2.0'
+
+    //Google Maps
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
 
 
     testImplementation 'junit:junit:4.13.2'
